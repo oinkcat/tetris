@@ -117,7 +117,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     int windowX = (screenWidth - WND_WIDTH) / 2;
     int windowY = (screenHeight - WND_HEIGHT) / 2;
 
-    DWORD windowStyle = WS_OVERLAPPEDWINDOW & (~WS_MAXIMIZEBOX);
+    DWORD windowStyle = WS_OVERLAPPEDWINDOW & (~(WS_MAXIMIZEBOX | WS_THICKFRAME));
 
     hMainWnd = CreateWindow(szWindowClass, szTitle, windowStyle,
         windowX, windowY, WND_WIDTH, WND_HEIGHT, NULL, NULL, hInstance, NULL);
