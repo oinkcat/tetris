@@ -1,74 +1,8 @@
 ﻿#include "stdafx.h"
 #include "game.h"
 
-static const int N_FIGURES = 6;
-
-// Очки
-int score = 0;
-
-// Поле
-char field[GAME_ROWS][GAME_COLS];
-
-// Шаблоны фигур
-static char templates[N_FIGURES][FIG_SIZE][FIG_SIZE] = {
-    {
-        0, 1, 0, 0,
-        0, 1, 0, 0,
-        0, 1, 0, 0,
-        0, 1, 0, 0
-    },
-    {
-        0, 0, 0, 0,
-        1, 1, 1, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 0
-    },
-    {
-        0, 0, 0, 0,
-        1, 1, 1, 0,
-        1, 0, 0, 0,
-        0, 0, 0, 0
-    },
-    {
-        0, 0, 0, 0,
-        0, 1, 1, 0,
-        1, 1, 0, 0,
-        0, 0, 0, 0
-    },
-    {
-        0, 0, 0, 0,
-        1, 1, 0, 0,
-        0, 1, 1, 0,
-        0, 0, 0, 0
-    },
-    {
-        0, 0, 0, 0,
-        0, 1, 1, 0,
-        0, 1, 1, 0,
-        0, 0, 0, 0
-    },
-};
-
-// Начальные отступы сверху
-static char initialOffsets[N_FIGURES] = { 0, -1, -1, -1, -1, -1 };
-
-// Индекс следующей фигуры
-static int nextFigureIdx;
-
-// Функция обратного вызова - конец игра
-static ENDGAMEPROC gameIsOverFn;
-
-// Текущая падающая фигура
-char figure[FIG_SIZE][FIG_SIZE];
-
-// Следующая фигура
-char nextFigure[FIG_SIZE][FIG_SIZE];
-
-// Координаты фигуры
-int figOffsetX, figOffsetY;
-
-// Отобразить новую фигуру
-static void SpawnFigure()
+/* Отобразить новую фигуру */
+void TetrisGame::SpawnFigure()
 {
     // Установка текущей фигуры
     memcpy(figure, nextFigure, FIG_SIZE * FIG_SIZE);
@@ -80,8 +14,8 @@ static void SpawnFigure()
     memcpy(nextFigure, templates[nextFigureIdx], FIG_SIZE * FIG_SIZE);
 }
 
-// Поместить блоки фигуры на поле
-static void PlaceFigureBlocks()
+/* Поместить блоки фигуры на поле */
+void TetrisGame::PlaceFigureBlocks()
 {
     for (int fx = 0; fx < FIG_SIZE; fx++)
     {
@@ -97,8 +31,8 @@ static void PlaceFigureBlocks()
     score += 5;
 }
 
-// Удалить линии из блоков
-static void CollapseLines()
+/* Удалить линии из блоков */
+void TetrisGame::CollapseLines()
 {
     int bottomLine = figOffsetY + FIG_SIZE;
 
@@ -128,14 +62,8 @@ static void CollapseLines()
     }
 }
 
-// Находится ли блок в пределах поля
-inline static bool InBounds(int x, int y)
-{
-    return x >= 0 && x < GAME_COLS && y < GAME_ROWS;
-}
-
-// Проверить, можно ли передвинуть фигуру
-static bool CheckCanMove(char fragment[FIG_SIZE][FIG_SIZE], int dx, int dy)
+/* Проверить, можно ли передвинуть фигуру */
+bool TetrisGame::CheckCanMove(char fragment[FIG_SIZE][FIG_SIZE], Offsets coords)
 {
     for (int fy = 0; fy < FIG_SIZE; fy++)
     {
@@ -147,9 +75,9 @@ static bool CheckCanMove(char fragment[FIG_SIZE][FIG_SIZE], int dx, int dy)
             int fieldX = fx + figOffsetX;
             int fieldY = fy + figOffsetY;
             
-            if (InBounds(fieldX + dx, fieldY + dy))
+			if (InBounds({ fieldX + coords.x, fieldY + coords.y }))
             {
-                if (field[fieldY + dy][fieldX + dx] != 0)
+                if (field[fieldY + coords.y][fieldX + coords.x] != 0)
                     return false;
             }
             else
@@ -160,8 +88,8 @@ static bool CheckCanMove(char fragment[FIG_SIZE][FIG_SIZE], int dx, int dy)
     return true;
 }
 
-// Инициализировать игровое поле
-void InitializeGame(ENDGAMEPROC gameOverCallback)
+/* Инициализировать игровое поле */
+void TetrisGame::Initialize(ENDGAMEPROC gameOverCallback)
 {
     gameIsOverFn = gameOverCallback;
 
@@ -174,10 +102,10 @@ void InitializeGame(ENDGAMEPROC gameOverCallback)
     SpawnFigure();
 }
 
-// Обновить состояние игры
-void UpdateGame()
+/* Обновить состояние игры */
+void TetrisGame::UpdateState()
 {
-    if (CheckCanMove(figure, 0, 1))
+	if (CheckCanMove(figure, { 0, 1 }))
     {
         figOffsetY++;
     }
@@ -187,7 +115,7 @@ void UpdateGame()
         CollapseLines();
         SpawnFigure();
 
-        if (!CheckCanMove(figure, 0, 0))
+		if (!CheckCanMove(figure, { 0, 0 }))
         {
             PlaceFigureBlocks();
             memset(figure, 0, FIG_SIZE * FIG_SIZE);
@@ -196,26 +124,26 @@ void UpdateGame()
     }
 }
 
-// Сместить фигуру по оси X
-void MoveFigure(int dx)
+/* Сместить фигуру по оси X */
+void TetrisGame::MoveFigure(int dx)
 {
-    if (CheckCanMove(figure, dx, 0))
+	if (CheckCanMove(figure, { dx, 0 }))
     {
         figOffsetX += dx;
     }
 }
 
-// Бросить фигуру
-void DropFigure()
+/* Бросить фигуру */
+void TetrisGame::DropFigure()
 {
-    while (CheckCanMove(figure, 0, 1))
+	while (CheckCanMove(figure, { 0, 1 }))
     {
         figOffsetY++;
     }
 }
 
-// Развернуть фигуру
-void RotateFigure()
+/* Развернуть фигуру */
+void TetrisGame::RotateFigure()
 {
     char rotated[FIG_SIZE][FIG_SIZE];
 
@@ -227,7 +155,7 @@ void RotateFigure()
         }
     }
 
-    if (CheckCanMove(rotated, 0, 0))
+	if (CheckCanMove(rotated, { 0, 0 }))
     {
         memcpy(&figure, &rotated, FIG_SIZE * FIG_SIZE);
     }

@@ -45,6 +45,8 @@ INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
 void UpdateState(HWND, UINT, UINT_PTR, DWORD);
 void GameOver();
 
+static TetrisGame* game;
+
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                        LPTSTR lpCmdLine, int nCmdShow)
 {
@@ -138,11 +140,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 // Инициализировать ресурсы
 void InitializeResources(HWND hWnd)
 {
-    srand(GetTickCount());
+	game = new TetrisGame();
     cellPen = CreatePen(PS_SOLID, 1, 0x888888);
     backgroundBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
     figureBrush = CreateSolidBrush(0xee44aa);
     fallingBrush = CreateSolidBrush(0x8844ee);
+
+    srand(GetTickCount());
 }
 
 // Отобразить очки и справочную информацию
@@ -152,7 +156,7 @@ void PaintHUD(HDC hdc)
     const int SPACE = 30;
 
     TCHAR scoreMsg[32];
-    wsprintf((LPWSTR)scoreMsg, TEXT("Счет: %d"), score);
+    wsprintf((LPWSTR)scoreMsg, TEXT("Счет: %d"), game->getScore());
 
     RECT textRect = {
         WND_WIDTH / 2, BORDER_PADDING,
@@ -177,11 +181,13 @@ void PaintHUD(HDC hdc)
     };
     FillRect(hdc, &previewBack, backgroundBrush);
 
+	auto nextFigure = game->getFigure(NEXT);
+
     for (int i = 0; i < FIG_SIZE; i++)
     {
         for (int j = 0; j < FIG_SIZE; j++)
         {
-            if (nextFigure[j][i] == 0)
+            if (nextFigure[j * FIG_SIZE + i] == 0)
                 continue;
 
             int pcx = previewX + PREVIEW_SIZE * i;
@@ -231,21 +237,25 @@ void PaintWindow(HWND hWnd, HDC hdc)
     // Фигуры
     SelectObject(hdc, figureBrush);
 
+	char* field = game->getField();
+	char* figure = game->getFigure(CURRENT);
+	Offsets pos = game->getFigureOffsets();
+
     for (int i = 0; i < GAME_ROWS; i++)
     {
         for (int j = 0; j < GAME_COLS; j++)
         {
             bool inFalling = false;
 
-            if ((j >= figOffsetX && j < figOffsetX + FIG_SIZE) &&
-                (i >= figOffsetY && i < figOffsetY + FIG_SIZE))
+            if ((j >= pos.x && j < pos.x + FIG_SIZE) &&
+                (i >= pos.y && i < pos.y + FIG_SIZE))
             {
-                int figX = j - figOffsetX;
-                int figY = i - figOffsetY;
-                inFalling = figure[figY][figX] != 0;
+                int figX = j - pos.x;
+                int figY = i - pos.y;
+                inFalling = figure[figY * FIG_SIZE + figX] != 0;
             }
 
-            if (field[i][j] != 0 || inFalling)
+            if (field[i * GAME_COLS + j] != 0 || inFalling)
             {
                 int cellX = BORDER_PADDING + j * cellSize;
                 int cellY = BORDER_PADDING + i * cellSize;
@@ -276,22 +286,22 @@ bool HandleKeys()
 {
     if (pressedKeys[KEY_LEFT])
     {
-        MoveFigure(-1);
+        game->MoveFigure(-1);
         return true;
     }
     else if (pressedKeys[KEY_RIGHT])
     {
-        MoveFigure(1);
+        game->MoveFigure(1);
         return true;
     }
     else if (pressedKeys[KEY_UP])
     {
-        RotateFigure();
+        game->RotateFigure();
         return true;
     }
     else if (pressedKeys[KEY_DOWN])
     {
-        DropFigure();
+        game->DropFigure();
         ticks = TIMER_INTERVAL - TIMER_INPUT_INTERVAL;
         return true;
     }
@@ -325,7 +335,7 @@ void UpdateState(HWND hWnd, UINT id, UINT_PTR msg, DWORD param)
 
     if (ticks > TIMER_INTERVAL)
     {
-        UpdateGame();
+        game->UpdateState();
         updated = true;
         ticks = 0;
     }
@@ -354,7 +364,7 @@ void StartNewGame()
     }
     keyHandled = false;
 
-    InitializeGame((ENDGAMEPROC)GameOver);
+    game->Initialize((ENDGAMEPROC)GameOver);
     ShowWindow(hNewBtn, SW_HIDE);
     ForceRepaint();
 }
@@ -367,7 +377,7 @@ void GameOver()
     hTimer = NULL;
     
     TCHAR* text[32];
-    wsprintf((LPWSTR)text, TEXT("Игра окончена. Счет: %d"), score);
+    wsprintf((LPWSTR)text, TEXT("Игра окончена. Счет: %d"), game->getScore());
 
     MessageBox(hMainWnd, (LPCWSTR)text, szTitle, MB_OK | MB_ICONINFORMATION);
 
