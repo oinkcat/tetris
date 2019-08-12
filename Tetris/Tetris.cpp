@@ -1,29 +1,26 @@
-// Tetris.cpp: определяет точку входа для приложения.
-//
-
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "Tetris.h"
 
 #define MAX_LOADSTRING 100
 
-// Размеры окна
+// Р Р°Р·РјРµСЂС‹ РѕРєРЅР°
 const int WND_WIDTH = 500;
 const int WND_HEIGHT = 480;
 
 const int BORDER_PADDING = 10;
 
-// Интервалы таймера
+// РРЅС‚РµСЂРІР°Р»С‹ С‚Р°Р№РјРµСЂР°
 const int TIMER_INTERVAL = 800;
 const int TIMER_INPUT_INTERVAL = TIMER_INTERVAL / 3;
 
-// Клавиши
+// РљР»Р°РІРёС€Рё
 const int N_KEYS_TOTAL = 256;
 const int KEY_LEFT = 37;
 const int KEY_UP = 38;
 const int KEY_RIGHT = 39;
 const int KEY_DOWN = 40;
 
-// Глобальные переменные:
+// Р“Р»РѕР±Р°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ:
 HINSTANCE hInst;
 HWND hMainWnd, hNewBtn;
 TCHAR szTitle[MAX_LOADSTRING];
@@ -31,15 +28,15 @@ TCHAR szWindowClass[MAX_LOADSTRING];
 UINT hTimer = NULL;
 int ticks;
 
-// Нажатые клавиши
+// РќР°Р¶Р°С‚С‹Рµ РєР»Р°РІРёС€Рё
 bool pressedKeys[N_KEYS_TOTAL];
 bool keyHandled;
 
-// Ресурсы
+// Р РµСЃСѓСЂСЃС‹
 HPEN cellPen;
 HBRUSH backgroundBrush, figureBrush, fallingBrush;
 
-// Определения функций
+// РћРїСЂРµРґРµР»РµРЅРёСЏ С„СѓРЅРєС†РёР№
 ATOM MyRegisterClass(HINSTANCE hInstance);
 BOOL InitInstance(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -57,12 +54,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	MSG msg;
 	HACCEL hAccelTable;
 
-	// Инициализация глобальных строк
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РіР»РѕР±Р°Р»СЊРЅС‹С… СЃС‚СЂРѕРє
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadString(hInstance, IDC_TETRIS, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
 
-	// Выполнить инициализацию приложения:
+	// Р’С‹РїРѕР»РЅРёС‚СЊ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЋ РїСЂРёР»РѕР¶РµРЅРёСЏ:
 	if (!InitInstance (hInstance, nCmdShow))
 	{
 		return FALSE;
@@ -70,7 +67,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TETRIS));
 
-	// Цикл основного сообщения:
+	// Р¦РёРєР» РѕСЃРЅРѕРІРЅРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ:
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
 		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
@@ -83,7 +80,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	return (int)msg.wParam;
 }
 
-// Зарегистрировать класс окна
+// Р—Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊ РєР»Р°СЃСЃ РѕРєРЅР°
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
 	WNDCLASSEX wcex;
@@ -105,12 +102,12 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	return RegisterClassEx(&wcex);
 }
 
-// Инициализировать окно
+// РРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°С‚СЊ РѕРєРЅРѕ
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInst = hInstance;
 
-    // Разместить окно в центре
+    // Р Р°Р·РјРµСЃС‚РёС‚СЊ РѕРєРЅРѕ РІ С†РµРЅС‚СЂРµ
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
@@ -127,7 +124,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
         return FALSE;
     }
 
-    hNewBtn = CreateWindow(TEXT("BUTTON"), TEXT("Начать новую игру"),
+    hNewBtn = CreateWindow(TEXT("BUTTON"), TEXT("РќР°С‡Р°С‚СЊ РЅРѕРІСѓСЋ РёРіСЂСѓ"),
         WS_CHILD | BS_DEFPUSHBUTTON,
         WND_WIDTH / 2, 150, 200, 32,
         hMainWnd, NULL, hInst, NULL);
@@ -138,7 +135,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     return TRUE;
 }
 
-// Инициализировать ресурсы
+// РРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°С‚СЊ СЂРµСЃСѓСЂСЃС‹
 void InitializeResources(HWND hWnd)
 {
     srand(GetTickCount());
@@ -148,14 +145,14 @@ void InitializeResources(HWND hWnd)
     fallingBrush = CreateSolidBrush(0x8844ee);
 }
 
-// Отобразить очки и справочную информацию
+// РћС‚РѕР±СЂР°Р·РёС‚СЊ РѕС‡РєРё Рё СЃРїСЂР°РІРѕС‡РЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ
 void PaintHUD(HDC hdc)
 {
     const int PREVIEW_SIZE = 10;
     const int SPACE = 30;
 
     TCHAR scoreMsg[32];
-    wsprintf((LPWSTR)scoreMsg, TEXT("Счет: %d"), score);
+    wsprintf((LPWSTR)scoreMsg, TEXT("РЎС‡РµС‚: %d"), score);
 
     RECT textRect = {
         WND_WIDTH / 2, BORDER_PADDING,
@@ -167,10 +164,10 @@ void PaintHUD(HDC hdc)
     textRect.top += SPACE;
     textRect.bottom += SPACE;
 
-    TCHAR* nextMsg = TEXT("Следующая фигура:");
+    TCHAR* nextMsg = TEXT("РЎР»РµРґСѓСЋС‰Р°СЏ С„РёРіСѓСЂР°:");
     DrawText(hdc, nextMsg, wcslen(nextMsg), &textRect, DT_LEFT);
 
-    // Отобразить следующую фигуру
+    // РћС‚РѕР±СЂР°Р·РёС‚СЊ СЃР»РµРґСѓСЋС‰СѓСЋ С„РёРіСѓСЂСѓ
     int previewX = textRect.left;
     int previewY = textRect.top + SPACE;
 
@@ -196,7 +193,7 @@ void PaintHUD(HDC hdc)
     }
 }
 
-// Отрисовать всю графику
+// РћС‚СЂРёСЃРѕРІР°С‚СЊ РІСЃСЋ РіСЂР°С„РёРєСѓ
 void PaintWindow(HWND hWnd, HDC hdc)
 {
     RECT client;
@@ -206,7 +203,7 @@ void PaintWindow(HWND hWnd, HDC hdc)
     int cellSize = fieldHeight / GAME_ROWS;
     int fieldWidth = cellSize * GAME_COLS;
 
-    // Фон
+    // Р¤РѕРЅ
     SelectObject(hdc, backgroundBrush);
     RECT fieldRect = {
         BORDER_PADDING, BORDER_PADDING,
@@ -214,7 +211,7 @@ void PaintWindow(HWND hWnd, HDC hdc)
     };
     FillRect(hdc, &fieldRect, backgroundBrush);
 
-    // Сетка
+    // РЎРµС‚РєР°
     SelectObject(hdc, cellPen);
 
     for (int i = 0; i < GAME_ROWS + 1; i++)
@@ -231,7 +228,7 @@ void PaintWindow(HWND hWnd, HDC hdc)
         LineTo(hdc, xPoint, BORDER_PADDING + fieldHeight);
     }
 
-    // Фигуры
+    // Р¤РёРіСѓСЂС‹
     SelectObject(hdc, figureBrush);
 
     for (int i = 0; i < GAME_ROWS; i++)
@@ -262,19 +259,19 @@ void PaintWindow(HWND hWnd, HDC hdc)
         }
     }
 
-    // Интерфейс
+    // РРЅС‚РµСЂС„РµР№СЃ
     PaintHUD(hdc);
 }
 
-// Вызвать перерисовку окна
+// Р’С‹Р·РІР°С‚СЊ РїРµСЂРµСЂРёСЃРѕРІРєСѓ РѕРєРЅР°
 void ForceRepaint()
 {
-    LPRECT client = NULL;
-    GetClientRect(hMainWnd, client);
-    InvalidateRect(hMainWnd, client, TRUE);
+    RECT client;
+    GetClientRect(hMainWnd, &client);
+    InvalidateRect(hMainWnd, &client, TRUE);
 }
 
-// Обработчик нажатых клавиш 
+// РћР±СЂР°Р±РѕС‚С‡РёРє РЅР°Р¶Р°С‚С‹С… РєР»Р°РІРёС€ 
 bool HandleKeys()
 {
     if (pressedKeys[KEY_LEFT])
@@ -302,7 +299,7 @@ bool HandleKeys()
     return false;
 }
 
-// Обработать нажатие клавиши сразу после нажатия
+// РћР±СЂР°Р±РѕС‚Р°С‚СЊ РЅР°Р¶Р°С‚РёРµ РєР»Р°РІРёС€Рё СЃСЂР°Р·Сѓ РїРѕСЃР»Рµ РЅР°Р¶Р°С‚РёСЏ
 void TryHandleKeyImmediately(int keyCode)
 {
     if (!pressedKeys[keyCode] && !keyHandled)
@@ -313,7 +310,7 @@ void TryHandleKeyImmediately(int keyCode)
     }
 }
 
-// Событие таймера
+// РЎРѕР±С‹С‚РёРµ С‚Р°Р№РјРµСЂР°
 void UpdateState(HWND hWnd, UINT id, UINT_PTR msg, DWORD param)
 {
     ticks += TIMER_INPUT_INTERVAL;
@@ -339,10 +336,10 @@ void UpdateState(HWND hWnd, UINT id, UINT_PTR msg, DWORD param)
     }
 }
 
-// Начать новую игру
+// РќР°С‡Р°С‚СЊ РЅРѕРІСѓСЋ РёРіСЂСѓ
 void StartNewGame()
 {
-    // Таймер
+    // РўР°Р№РјРµСЂ
     if (hTimer != NULL)
     {
         KillTimer(NULL, hTimer);
@@ -350,7 +347,7 @@ void StartNewGame()
     hTimer = SetTimer(NULL, NULL, TIMER_INPUT_INTERVAL, (TIMERPROC)UpdateState);
     ticks = 0;
 
-    // Клавиши
+    // РљР»Р°РІРёС€Рё
     for (int i = 0; i < N_KEYS_TOTAL; i++)
     {
         pressedKeys[i] = false;
@@ -362,7 +359,7 @@ void StartNewGame()
     ForceRepaint();
 }
 
-// Конец игры
+// РљРѕРЅРµС† РёРіСЂС‹
 void GameOver()
 {
     ForceRepaint();
@@ -370,7 +367,7 @@ void GameOver()
     hTimer = NULL;
     
     TCHAR* text[32];
-    wsprintf((LPWSTR)text, TEXT("Игра окончена. Счет: %d"), score);
+    wsprintf((LPWSTR)text, TEXT("РРіСЂР° РѕРєРѕРЅС‡РµРЅР°. РЎС‡РµС‚: %d"), score);
 
     MessageBox(hMainWnd, (LPCWSTR)text, szTitle, MB_OK | MB_ICONINFORMATION);
 
@@ -378,7 +375,7 @@ void GameOver()
     SetFocus(hNewBtn);
 }
 
-// Обработка оконных сообщений
+// РћР±СЂР°Р±РѕС‚РєР° РѕРєРѕРЅРЅС‹С… СЃРѕРѕР±С‰РµРЅРёР№
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -395,14 +392,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		wmId = LOWORD(wParam);
         wmEvent = HIWORD(wParam);
 
-        // Кнопки
+        // РљРЅРѕРїРєРё
         if ((HWND)lParam == hNewBtn)
         {
             StartNewGame();
             return true;
         }
 
-		// Меню:
+		// РњРµРЅСЋ:
 		switch (wmId)
 		{
         case IDM_NEWGAME:
@@ -443,7 +440,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-// Обработчик сообщений для окна "О программе".
+// РћР±СЂР°Р±РѕС‚С‡РёРє СЃРѕРѕР±С‰РµРЅРёР№ РґР»СЏ РѕРєРЅР° "Рћ РїСЂРѕРіСЂР°РјРјРµ".
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(lParam);

@@ -1,15 +1,15 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "game.h"
 
 static const int N_FIGURES = 6;
 
-// Очки
+// РћС‡РєРё
 int score = 0;
 
-// Поле
+// РџРѕР»Рµ
 char field[GAME_ROWS][GAME_COLS];
 
-// Шаблоны фигур
+// РЁР°Р±Р»РѕРЅС‹ С„РёРіСѓСЂ
 static char templates[N_FIGURES][FIG_SIZE][FIG_SIZE] = {
     {
         0, 1, 0, 0,
@@ -49,38 +49,38 @@ static char templates[N_FIGURES][FIG_SIZE][FIG_SIZE] = {
     },
 };
 
-// Начальные отступы сверху
+// РќР°С‡Р°Р»СЊРЅС‹Рµ РѕС‚СЃС‚СѓРїС‹ СЃРІРµСЂС…Сѓ
 static char initialOffsets[N_FIGURES] = { 0, -1, -1, -1, -1, -1 };
 
-// Индекс следующей фигуры
+// РРЅРґРµРєСЃ СЃР»РµРґСѓСЋС‰РµР№ С„РёРіСѓСЂС‹
 static int nextFigureIdx;
 
-// Функция обратного вызова - конец игра
+// Р¤СѓРЅРєС†РёСЏ РѕР±СЂР°С‚РЅРѕРіРѕ РІС‹Р·РѕРІР° - РєРѕРЅРµС† РёРіСЂР°
 static ENDGAMEPROC gameIsOverFn;
 
-// Текущая падающая фигура
+// РўРµРєСѓС‰Р°СЏ РїР°РґР°СЋС‰Р°СЏ С„РёРіСѓСЂР°
 char figure[FIG_SIZE][FIG_SIZE];
 
-// Следующая фигура
+// РЎР»РµРґСѓСЋС‰Р°СЏ С„РёРіСѓСЂР°
 char nextFigure[FIG_SIZE][FIG_SIZE];
 
-// Координаты фигуры
+// РљРѕРѕСЂРґРёРЅР°С‚С‹ С„РёРіСѓСЂС‹
 int figOffsetX, figOffsetY;
 
-// Отобразить новую фигуру
+// РћС‚РѕР±СЂР°Р·РёС‚СЊ РЅРѕРІСѓСЋ С„РёРіСѓСЂСѓ
 static void SpawnFigure()
 {
-    // Установка текущей фигуры
+    // РЈСЃС‚Р°РЅРѕРІРєР° С‚РµРєСѓС‰РµР№ С„РёРіСѓСЂС‹
     memcpy(figure, nextFigure, FIG_SIZE * FIG_SIZE);
     figOffsetX = (GAME_COLS - FIG_SIZE) / 2;
     figOffsetY = initialOffsets[nextFigureIdx];
 
-    // Следующая фигура
+    // РЎР»РµРґСѓСЋС‰Р°СЏ С„РёРіСѓСЂР°
     nextFigureIdx = rand() % N_FIGURES;
     memcpy(nextFigure, templates[nextFigureIdx], FIG_SIZE * FIG_SIZE);
 }
 
-// Поместить блоки фигуры на поле
+// РџРѕРјРµСЃС‚РёС‚СЊ Р±Р»РѕРєРё С„РёРіСѓСЂС‹ РЅР° РїРѕР»Рµ
 static void PlaceFigureBlocks()
 {
     for (int fx = 0; fx < FIG_SIZE; fx++)
@@ -97,14 +97,14 @@ static void PlaceFigureBlocks()
     score += 5;
 }
 
-// Удалить линии из блоков
+// РЈРґР°Р»РёС‚СЊ Р»РёРЅРёРё РёР· Р±Р»РѕРєРѕРІ
 static void CollapseLines()
 {
     int bottomLine = figOffsetY + FIG_SIZE;
 
     for (int lineIdx = figOffsetY; lineIdx <= bottomLine; lineIdx++)
     {
-        // Определить, выстроена ли линия
+        // РћРїСЂРµРґРµР»РёС‚СЊ, РІС‹СЃС‚СЂРѕРµРЅР° Р»Рё Р»РёРЅРёСЏ
         bool isLine = true;
         for (int i = 0; i < GAME_COLS; i++)
         {
@@ -115,7 +115,7 @@ static void CollapseLines()
             }
         }
 
-        // Сдвинуть блоки вниз
+        // РЎРґРІРёРЅСѓС‚СЊ Р±Р»РѕРєРё РІРЅРёР·
         if (isLine)
         {
             for (int i = lineIdx; i >= 1; i--)
@@ -128,13 +128,13 @@ static void CollapseLines()
     }
 }
 
-// Находится ли блок в пределах поля
+// РќР°С…РѕРґРёС‚СЃСЏ Р»Рё Р±Р»РѕРє РІ РїСЂРµРґРµР»Р°С… РїРѕР»СЏ
 inline static bool InBounds(int x, int y)
 {
     return x >= 0 && x < GAME_COLS && y < GAME_ROWS;
 }
 
-// Проверить, можно ли передвинуть фигуру
+// РџСЂРѕРІРµСЂРёС‚СЊ, РјРѕР¶РЅРѕ Р»Рё РїРµСЂРµРґРІРёРЅСѓС‚СЊ С„РёРіСѓСЂСѓ
 static bool CheckCanMove(char fragment[FIG_SIZE][FIG_SIZE], int dx, int dy)
 {
     for (int fy = 0; fy < FIG_SIZE; fy++)
@@ -160,12 +160,12 @@ static bool CheckCanMove(char fragment[FIG_SIZE][FIG_SIZE], int dx, int dy)
     return true;
 }
 
-// Инициализировать игровое поле
+// РРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°С‚СЊ РёРіСЂРѕРІРѕРµ РїРѕР»Рµ
 void InitializeGame(ENDGAMEPROC gameOverCallback)
 {
     gameIsOverFn = gameOverCallback;
 
-    // Установить начальную фигуру
+    // РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РЅР°С‡Р°Р»СЊРЅСѓСЋ С„РёРіСѓСЂСѓ
     nextFigureIdx = rand() % N_FIGURES;
     memcpy(nextFigure, templates[nextFigureIdx], FIG_SIZE * FIG_SIZE);
 
@@ -174,7 +174,7 @@ void InitializeGame(ENDGAMEPROC gameOverCallback)
     SpawnFigure();
 }
 
-// Обновить состояние игры
+// РћР±РЅРѕРІРёС‚СЊ СЃРѕСЃС‚РѕСЏРЅРёРµ РёРіСЂС‹
 void UpdateGame()
 {
     if (CheckCanMove(figure, 0, 1))
@@ -196,7 +196,7 @@ void UpdateGame()
     }
 }
 
-// Сместить фигуру по оси X
+// РЎРјРµСЃС‚РёС‚СЊ С„РёРіСѓСЂСѓ РїРѕ РѕСЃРё X
 void MoveFigure(int dx)
 {
     if (CheckCanMove(figure, dx, 0))
@@ -205,7 +205,7 @@ void MoveFigure(int dx)
     }
 }
 
-// Бросить фигуру
+// Р‘СЂРѕСЃРёС‚СЊ С„РёРіСѓСЂСѓ
 void DropFigure()
 {
     while (CheckCanMove(figure, 0, 1))
@@ -214,7 +214,7 @@ void DropFigure()
     }
 }
 
-// Развернуть фигуру
+// Р Р°Р·РІРµСЂРЅСѓС‚СЊ С„РёРіСѓСЂСѓ
 void RotateFigure()
 {
     char rotated[FIG_SIZE][FIG_SIZE];

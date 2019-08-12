@@ -1,38 +1,38 @@
-// Определение общих функций логики игры
+п»ї// РћРїСЂРµРґРµР»РµРЅРёРµ РѕР±С‰РёС… С„СѓРЅРєС†РёР№ Р»РѕРіРёРєРё РёРіСЂС‹
 
 const int GAME_COLS = 10;
 const int GAME_ROWS = 20;
 const int FIG_SIZE = 4;
 
-// Текущий счет
+// РўРµРєСѓС‰РёР№ СЃС‡РµС‚
 extern int score;
 
-// Игровое поле
+// РРіСЂРѕРІРѕРµ РїРѕР»Рµ
 extern char field[GAME_ROWS][GAME_COLS];
 
-// Падающая фигура
+// РџР°РґР°СЋС‰Р°СЏ С„РёРіСѓСЂР°
 extern char figure[FIG_SIZE][FIG_SIZE];
 
-// Падающая фигура
+// РџР°РґР°СЋС‰Р°СЏ С„РёРіСѓСЂР°
 extern char nextFigure[FIG_SIZE][FIG_SIZE];
 
-// Координаты фигуры
+// РљРѕРѕСЂРґРёРЅР°С‚С‹ С„РёРіСѓСЂС‹
 extern int figOffsetX, figOffsetY;
 
-// Обратный вызов - конец игры
+// РћР±СЂР°С‚РЅС‹Р№ РІС‹Р·РѕРІ - РєРѕРЅРµС† РёРіСЂС‹
 typedef void(*ENDGAMEPROC)(void);
 
-// Инициализация
+// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
 void InitializeGame(ENDGAMEPROC gameOverCallback);
 
-// Обновлене состояния
+// РћР±РЅРѕРІР»РµРЅРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ
 void UpdateGame();
 
-// Переместить фигуру
+// РџРµСЂРµРјРµСЃС‚РёС‚СЊ С„РёРіСѓСЂСѓ
 void MoveFigure(int dx);
 
-// Уронить фигуру
+// РЈСЂРѕРЅРёС‚СЊ С„РёРіСѓСЂСѓ
 void DropFigure();
 
-// Повернуть фигуру
+// РџРѕРІРµСЂРЅСѓС‚СЊ С„РёРіСѓСЂСѓ
 void RotateFigure();
