@@ -5,9 +5,13 @@
 
 #pragma once
 
+#pragma comment(linker,"\"/manifestdependency:type='win32' \
+	name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
+	processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+
 #include "targetver.h"
 
-#define WIN32_LEAN_AND_MEAN             // Исключите редко используемые компоненты из заголовков Windows
+#define WIN32_LEAN_AND_MEAN
 // Файлы заголовков Windows:
 #include <windows.h>
 
@@ -16,6 +20,3 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-
-
-// TODO: Установите здесь ссылки на дополнительные заголовки, требующиеся для программы
